@@ -2,10 +2,21 @@
 
 Secure Real-Time Location Sharing & Emergency Dispatch Platform.
 
-## Features
+🚀 **Live Frontend URL**: [https://guardian-live.pages.dev](https://guardian-live.pages.dev) (Deployed on Cloudflare Pages)
+
+## Platform Screenshots
+
+### 🖥️ Dispatch Operations Console
+![Dispatch Operations Console](docs/console_dashboard.png)
+
+### 🔑 Secure Authentication Gateway
+![Secure Authentication Gateway](docs/login_screen.png)
+
+## Core Features
 
 - **Live Location Tracking & WebSockets**: Support for real-time geolocation streaming, adaptive intervals, heading, signal quality, and battery status.
-- **Enterprise Dispatch & Emergency SOS**: Create incidents, assign/reassign responders, trigger panic button (SOS), and manage geofencing alerts (safe zones, restricted zones).
+- **Dedicated Responder Console**: A touchscreen-friendly unit terminal with live GPS tracking, navigation routes, operational status triggers, and direct dispatch messaging.
+- **Intelligent Dispatch & Route Navigation**: Geodesic Haversine score recommendations for unit assignment, and multi-route rendering in Leaflet using OSRM with database-backed geometry caching.
 - **Advanced Auth & Security**: RBAC + PBAC (Permission-based access control), sliding-session JWT tokens, Two-Factor Authentication, Session Revocation, rate limiting, and audit logging.
 - **AI-Assisted Operations**: ETAs, anomaly detection (prolonged inactivity/abnormal movements), resource allocation recommendations.
 - **Observability & DevOps**: Complete logging, Prometheus metrics, Grafana dashboards, Loki logs, Docker & Docker Compose deployment templates.
@@ -37,3 +48,4 @@ guardian-live-enterprise/
    make migrate
    make seed-db
    ```
+
