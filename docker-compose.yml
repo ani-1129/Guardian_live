@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: guardian-postgres
+    environment:
+      POSTGRES_DB: guardian_db
+      POSTGRES_USER: guardian_user
+      POSTGRES_PASSWORD: guardian_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - guardian-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: guardian-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - guardian-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: guardian-backend
+    environment:
+      - DATABASE_URL=postgresql://guardian_user:guardian_pass@postgres:5432/guardian_db
+      - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET=super-secret-jwt-key-change-in-production
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - guardian-network
+
+  celery_worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: guardian-celery
+    command: celery -A workers.tasks worker --loglevel=info
+    environment:
+      - DATABASE_URL=postgresql://guardian_user:guardian_pass@postgres:5432/guardian_db
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - guardian-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: guardian-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - guardian-network
+
+volumes:
+  pgdata:
+
+networks:
+  guardian-network:
+    driver: bridge
