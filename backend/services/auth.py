@@ -2,7 +2,9 @@ from datetime import datetime, timedelta
 import jwt
 import bcrypt
 
-SECRET_KEY = "super-secret-jwt-key-change-in-production"
+import os
+
+SECRET_KEY = os.getenv("JWT_SECRET", "super-secret-jwt-key-change-in-production")
 ALGORITHM = "HS256"
 
 class AuthService:

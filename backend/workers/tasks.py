@@ -4,11 +4,14 @@ import time
 from backend.services.notification import NotificationService
 from backend.services.reporting import ReportingService
 
+import os
+
 # Initialize Celery app
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 celery_app = Celery(
     "tasks",
-    broker="redis://localhost:6379/0",
-    backend="redis://localhost:6379/0"
+    broker=REDIS_URL,
+    backend=REDIS_URL
 )
 
 @celery_app.task

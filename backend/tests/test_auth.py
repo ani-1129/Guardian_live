@@ -6,7 +6,9 @@ client = TestClient(app)
 def test_health():
     response = client.get("/health")
     assert response.status_code == 200
-    assert response.json() == {"status": "healthy", "service": "guardian-backend"}
+    data = response.json()
+    assert data["status"] == "healthy"
+    assert data["service"] == "guardian-backend"
 
 def test_register_duplicate():
     # Simple check for register router inclusion

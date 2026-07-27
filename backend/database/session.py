@@ -1,7 +1,8 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-DATABASE_URL = "sqlite:///./guardian.db" # Default fallback for local testing without docker
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./guardian.db") # Default fallback for local testing without docker
 
 engine = create_engine(
     DATABASE_URL, connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {}
