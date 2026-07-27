@@ -6,7 +6,7 @@ from backend.database.session import get_db
 from backend.schemas.schemas import IncidentCreate, IncidentResponse
 from backend.repositories.incident import IncidentRepository
 from datetime import datetime
-from backend.models.models import Incident, AuditLog, ActivityTimeline, User
+from backend.models.models import Incident, AuditLog, ActivityTimeline, User, Organization
 from backend.websocket.broadcast import broadcast_to_all
 from backend.middleware.auth import has_permission, get_current_user
 
@@ -15,6 +15,15 @@ router = APIRouter(prefix="/incidents", tags=["incidents"])
 @router.post("/public", response_model=IncidentResponse)
 async def create_public_incident(incident_in: IncidentCreate, db: Session = Depends(get_db)):
     repo = IncidentRepository(db)
+    
+    org_id = incident_in.organization_id
+    if not db.query(Organization).filter(Organization.id == org_id).first():
+        fallback_org = db.query(Organization).first()
+        if fallback_org:
+            org_id = fallback_org.id
+        else:
+            raise HTTPException(status_code=400, detail="No organizations found in the database.")
+
     incident = Incident(
         title=incident_in.title,
         description=incident_in.description,
@@ -24,7 +33,7 @@ async def create_public_incident(incident_in: IncidentCreate, db: Session = Depe
         longitude=incident_in.longitude,
         address=incident_in.address,
         district=incident_in.district,
-        organization_id=incident_in.organization_id
+        organization_id=org_id
     )
     created = repo.create(incident)
     
@@ -73,6 +82,15 @@ async def create_public_incident(incident_in: IncidentCreate, db: Session = Depe
 @router.post("/", response_model=IncidentResponse, dependencies=[Depends(has_permission("incidents:create"))])
 async def create_incident(incident_in: IncidentCreate, db: Session = Depends(get_db)):
     repo = IncidentRepository(db)
+    
+    org_id = incident_in.organization_id
+    if not db.query(Organization).filter(Organization.id == org_id).first():
+        fallback_org = db.query(Organization).first()
+        if fallback_org:
+            org_id = fallback_org.id
+        else:
+            raise HTTPException(status_code=400, detail="No organizations found in the database.")
+
     incident = Incident(
         title=incident_in.title,
         description=incident_in.description,
@@ -82,7 +100,7 @@ async def create_incident(incident_in: IncidentCreate, db: Session = Depends(get
         longitude=incident_in.longitude,
         address=incident_in.address,
         district=incident_in.district,
-        organization_id=incident_in.organization_id,
+        organization_id=org_id,
         assigned_user_id=incident_in.assigned_user_id
     )
     created = repo.create(incident)
