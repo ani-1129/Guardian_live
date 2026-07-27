@@ -29,7 +29,7 @@ The project includes GitHub Actions template to build, test, and release contain
 
 ## Render Deployment (Blueprint)
 
-This repository includes a [render.yaml](file:///d:/internship/location/render.yaml) configuration file at the root to automatically spin up the entire backend stack (FastAPI Web Service, Celery Worker, PostgreSQL Database, and Redis Instance).
+This repository includes a [render.yaml](file:///d:/internship/location/render.yaml) configuration file at the root to automatically spin up the entire backend stack (FastAPI Web Service, PostgreSQL Database, and Redis Instance). To remain compatible with the **Render Free Tier**, the Celery worker runs concurrently alongside FastAPI inside the same Web Service container.
 
 ### Step-by-Step Deployment:
 
@@ -44,7 +44,7 @@ This repository includes a [render.yaml](file:///d:/internship/location/render.y
    - Click **Approve** to begin the deployment.
 4. **Environment Variables**:
    - Render will automatically configure `DATABASE_URL` and `REDIS_URL` connection strings between the services.
-   - The `JWT_SECRET` variable is automatically generated for the Web Service. Copy this generated value and add it manually under the Env Variables of `guardian-celery-worker` so that they match.
+   - The `JWT_SECRET` variable is automatically generated for the Web Service. No manual copying is needed as everything runs under a single service container!
 
 ---
 
