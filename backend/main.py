@@ -34,6 +34,8 @@ from backend.websocket.event_manager import handle_websocket_connection
 
 # Create tables for database compatibility
 Base.metadata.create_all(bind=engine)
+from backend.scripts.seed import seed
+seed(drop_tables=False)
 
 app = FastAPI(
     title="Guardian Live Enterprise API",

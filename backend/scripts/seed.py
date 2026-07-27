@@ -3,8 +3,9 @@ from backend.models.models import Base, Organization, Department, User, Incident
 from backend.services.auth import AuthService
 import json
 
-def seed():
-    Base.metadata.drop_all(bind=engine)
+def seed(drop_tables: bool = False):
+    if drop_tables:
+        Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
